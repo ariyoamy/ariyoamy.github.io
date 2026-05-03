@@ -2379,6 +2379,46 @@
         );
       }
 
+
+
+      // === Stylised continent outlines ===
+// Simplified lat/lon paths so the globe still feels schematic, not realistic.
+const continentPaths = [
+  // North America
+  [[70,-165],[60,-140],[50,-125],[35,-120],[25,-105],[15,-95],[10,-80],[25,-75],[40,-75],[55,-95],[70,-120],[70,-165]],
+
+  // South America
+  [[12,-80],[5,-70],[-10,-65],[-25,-60],[-40,-65],[-55,-70],[-35,-50],[-15,-45],[0,-50],[12,-80]],
+
+  // Europe / Asia
+  [[70,-10],[60,10],[55,35],[50,60],[55,90],[50,120],[35,140],[20,110],[10,80],[20,45],[35,25],[45,5],[55,-5],[70,-10]],
+
+  // Africa
+  [[35,-15],[25,10],[10,25],[-10,30],[-30,20],[-35,5],[-20,-10],[5,-15],[25,-10],[35,-15]],
+
+  // Australia
+  [[-10,115],[-20,130],[-35,145],[-40,130],[-30,115],[-18,110],[-10,115]],
+
+  // Greenland
+  [[78,-55],[72,-35],[65,-40],[60,-55],[65,-70],[75,-70],[78,-55]]
+];
+
+const continents = new THREE.Group();
+
+continentPaths.forEach(path => {
+  const points = path.map(([lat, lon]) => latLonToVec3(lat, lon, 1.425));
+  const lineGeo = new THREE.BufferGeometry().setFromPoints(points);
+  const lineMat = new THREE.LineBasicMaterial({
+    color: 0x60a5fa,
+    transparent: true,
+    opacity: 0.32
+  });
+  continents.add(new THREE.Line(lineGeo, lineMat));
+});
+
+globe.add(continents);
+
+      
       const markerGroup = new THREE.Group();
       globe.add(markerGroup);
 
