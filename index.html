@@ -2501,37 +2501,44 @@
       loop();
     })();
 
-    /* =========================================================
-       2. UTC CLOCK + SCROLL READOUT (telemetry strip)
-    ========================================================= */
-    (function () {
-      const clockEl = document.getElementById("utc-clock");
-      const scrollEl = document.getElementById("scroll-readout");
-      const epochEl = document.getElementById("epoch-readout");
+/* =========================================================
+   2. LOCAL CLOCK + SCROLL READOUT (telemetry strip)
+========================================================= */
+(function () {
+  const clockEl = document.getElementById("utc-clock");
+  const scrollEl = document.getElementById("scroll-readout");
+  const epochEl = document.getElementById("epoch-readout");
 
-      function pad(n) { return String(n).padStart(2, "0"); }
-      function tick() {
-        const d = new Date();
-        if (clockEl) {
-          clockEl.textContent =
-            pad(d.getUTCHours()) + ":" + pad(d.getUTCMinutes()) + ":" + pad(d.getUTCSeconds());
-        }
-        if (epochEl) {
-          epochEl.textContent = Math.floor(d.getTime() / 1000);
-        }
-      }
-      tick();
-      setInterval(tick, 1000);
+  function tick() {
+    const d = new Date();
 
-      function onScroll() {
-        if (!scrollEl) return;
-        const max = document.documentElement.scrollHeight - innerHeight;
-        const pct = max > 0 ? (scrollY / max) : 0;
-        scrollEl.textContent = pct.toFixed(2);
-      }
-      window.addEventListener("scroll", onScroll, { passive: true });
-      onScroll();
-    })();
+    if (clockEl) {
+      clockEl.textContent = new Intl.DateTimeFormat("en-GB", {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false
+      }).format(d);
+    }
+
+    if (epochEl) {
+      epochEl.textContent = Math.floor(d.getTime() / 1000);
+    }
+  }
+
+  tick();
+  setInterval(tick, 1000);
+
+  function onScroll() {
+    if (!scrollEl) return;
+    const max = document.documentElement.scrollHeight - innerHeight;
+    const pct = max > 0 ? (scrollY / max) : 0;
+    scrollEl.textContent = pct.toFixed(2);
+  }
+
+  window.addEventListener("scroll", onScroll, { passive: true });
+  onScroll();
+})();
 
     /* =========================================================
        3. SCROLL-TRIGGERED REVEALS
